@@ -53,4 +53,9 @@ class User extends Authenticatable //implements FilamentUser
     // {
     //     return $this->hasRole(['admin','Assistance','User','Editor']);
     // }
+
+    public function inventory()
+    {
+        return $this->hasMany(Inventory::class);
+    }
 }

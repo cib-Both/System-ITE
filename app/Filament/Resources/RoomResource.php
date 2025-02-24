@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CategoryResource\Pages;
-use App\Filament\Resources\CategoryResource\RelationManagers;
-use App\Models\Category;
+use App\Filament\Resources\RoomResource\Pages;
+use App\Filament\Resources\RoomResource\RelationManagers;
+use App\Models\Room;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
@@ -12,41 +12,49 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-
-class CategoryResource extends Resource
+class RoomResource extends Resource
 {
-    protected static ?string $model = Category::class;
+    protected static ?string $model = Room::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?string $navigationGroup = 'Inventory Management';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Category Details')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->unique(ignoreRecord: true)
-                            ->maxLength(255)
-                            ->placeholder('Category name'),
-                        Forms\Components\Textarea::make('description')
-                            ->placeholder('Description')
-                            ->columnSpanFull()
-                            ->autosize()
-                    ]),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255)
+                    ->placeholder('Room name'),
+                Forms\Components\Select::make('Location')
+                ->required()  
+                ->placeholder('Name of Building')
+                ->options([
+                    'Building STEM' => 'Building STEM',
+                    'Building A' => 'Building A',
+                    'Building B' => 'Building B',
+                    'Building C' => 'Building C',
+                    'Building D' => 'Building D',
+                    'Building E' => 'Building E',
+                    'Building T' => 'Building T',
+                ])
+                ->native(false),
             ]);
     }
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description'),
+                Tables\Columns\TextColumn::make('Location')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d-M-Y')
                     ->sortable()
@@ -62,7 +70,6 @@ class CategoryResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -81,9 +88,9 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ListRooms::route('/'),
+            'create' => Pages\CreateRoom::route('/create'),
+            'edit' => Pages\EditRoom::route('/{record}/edit'),
         ];
     }
 }
