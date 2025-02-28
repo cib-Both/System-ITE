@@ -4,10 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\InventoryResource\Pages;
 use App\Filament\Resources\InventoryResource\RelationManagers;
-use App\Models\Category;
 use App\Models\Inventory;
 use App\Models\User;
 use App\Models\Room;
+use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -28,29 +28,42 @@ class InventoryResource extends Resource
     {
         return $form       
             ->schema([
+                Forms\Components\Section::make('User')
+                    ->schema([
+                        Forms\Components\Select::make('user_id')
+                            ->placeholder('Select user')
+                            ->required()
+                            ->label('User')
+                            ->options(User::all()->pluck('name', 'id'))
+                            ->searchable(),
+                    ]),
                 Forms\Components\Section::make('Inventory Details')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('Dell, Imac, etc'),
+                            ->placeholder('Inventory name'),
                         Forms\Components\TextInput::make('code')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255)
-                            ->placeholder('Inventory code'),
+                            ->placeholder('Code of inventory'),
                         Forms\Components\TextInput::make('quantity')
                             ->required()
                             ->numeric()
                             ->placeholder('Quantity of inventory'),
                         Forms\Components\FileUpload::make('image')
-                            ->image(),
-                    ]),
+                            ->directory('images')
+                            ->image()
+                            ->visibility('public'),
+                    ])->columns(2),
+
                 Forms\Components\Section::make('Category')
                     ->schema([
                         Forms\Components\Select::make('category_id')
-                            ->label('Category')
                             ->options(Category::all()->pluck('name', 'id'))
+                            ->placeholder('Select category')
+                            ->required()
                             ->searchable()
                             ->createOptionForm([
                                 Forms\Components\TextInput::make('name')
@@ -65,9 +78,11 @@ class InventoryResource extends Resource
                             ])
                             ->required(),
                     ]),
+
                 Forms\Components\Section::make('Location')
                     ->schema([
                         Forms\Components\Select::make('room_id')
+                            ->placeholder('Select room, location')
                             ->label('Room')
                             ->options(Room::all()->mapWithKeys(function ($room) {
                                 return [$room->id => "{$room->name}, {$room->Location}"];
@@ -75,14 +90,7 @@ class InventoryResource extends Resource
                             ->required()
                             ->searchable(),
                     ]),
-                Forms\Components\Section::make('User')
-                    ->schema([
-                        Forms\Components\Select::make('user_id')
-                            ->required()
-                            ->label('User')
-                            ->options(User::all()->pluck('name', 'id'))
-                            ->searchable(),
-                    ]),
+
             ]);
     }
 
@@ -91,7 +99,10 @@ class InventoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('Image'),
+                    ->label('Image')
+                    ->disk('public')
+                    ->width('40px')
+                    ->height('40px'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')
@@ -106,7 +117,7 @@ class InventoryResource extends Resource
                 Tables\Columns\TextColumn::make('room.name')
                     ->label('Room')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('room.location')
+                Tables\Columns\TextColumn::make('room.Location')
                     ->label('Location')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')

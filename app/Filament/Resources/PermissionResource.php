@@ -22,19 +22,22 @@ class PermissionResource extends Resource
     protected static ?string $model = Permission::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-key';
-    protected static ?string $navigationGroup = 'Users Management';
+    protected static ?string $navigationGroup = 'Users Settings';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->label('Name')
-                    ->required()
-                    ->placeholder('Enter the permission')
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
+            Forms\Components\Section::make()
+                ->schema([
+                    TextInput::make('name')
+                        ->label('Name')
+                        ->required()
+                        ->placeholder('Enter the permission')
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true),
+                ]),
             ]);
     }
 

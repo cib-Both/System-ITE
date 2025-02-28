@@ -25,6 +25,8 @@ class RoomResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+        ->schema([
+            Forms\Components\Section::make('Room Details')
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
@@ -44,7 +46,8 @@ class RoomResource extends Resource
                     'Building T' => 'Building T',
                 ])
                 ->native(false),
-            ]);
+                ]),
+        ]);
     }
 
     public static function table(Table $table): Table

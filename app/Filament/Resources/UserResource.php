@@ -23,42 +23,50 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Users Management';
+    protected static ?string $navigationGroup = 'Users Settings';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Grid::make(1)
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255)
-                    ->placeholder('User name'),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->placeholder('Email')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->placeholder('Password')
-                    ->password()
-                    ->revealable()
-                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->required(fn (Page $livewire) => ($livewire instanceof Pages\CreateUser))
-                    ->maxLength(255), 
-                Select::make('Roles')
-                    ->multiple()
-                    ->relationship('Roles', 'name')
-                    ->preload(), 
-                Select::make('Permissions')
-                    ->multiple()
-                    ->relationship('Permissions', 'name')
-                    ->preload(), 
-            ]),                
-        ]);
+                Forms\Components\Tabs::make('User Details')
+                    ->tabs([
+                        Tab::make('General')
+                            ->icon('heroicon-m-user-plus')
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->placeholder('User name'),
+                                Forms\Components\TextInput::make('email')
+                                    ->email()
+                                    ->placeholder('Email')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('password')
+                                    ->placeholder('Password')
+                                    ->password()
+                                    ->revealable()
+                                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                                    ->dehydrated(fn ($state) => filled($state))
+                                    ->required(fn (Page $livewire) => ($livewire instanceof Pages\CreateUser))
+                                    ->maxLength(255),
+                            ]),
+                        Tab::make('Roles & Permissions')
+                            ->icon('heroicon-m-shield-check')
+                            ->schema([
+                                Select::make('roles')
+                                    ->multiple()
+                                    ->relationship('roles', 'name')
+                                    ->preload(),
+                                Select::make('permissions')
+                                    ->multiple()
+                                    ->relationship('permissions', 'name')
+                                    ->preload(),
+                            ]),
+                    ]),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -91,7 +99,7 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

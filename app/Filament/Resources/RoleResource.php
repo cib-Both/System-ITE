@@ -23,12 +23,14 @@ class RoleResource extends Resource
     protected static ?string $model = Role::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
-    protected static ?string $navigationGroup = 'Users Management';
+    protected static ?string $navigationGroup = 'Users Settings';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form
+        ->schema([
+            Forms\Components\Section::make()
             ->schema([
                 TextInput::make('name')
                     ->label('Name')
@@ -40,7 +42,8 @@ class RoleResource extends Resource
                     ->multiple()
                     ->relationship('Permissions', 'name')
                     ->preload(),
-            ]);
+            ]),
+        ]);
     }
 
     public static function table(Table $table): Table
