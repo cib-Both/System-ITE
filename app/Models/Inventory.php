@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inventory extends Model
 {
-    protected $fillable = ['name', 'price', 'quantity', 'code', 'image', 'category_id', 'user_id', 'room_id'];
+    use SoftDeletes;
+
+    protected $fillable = ['name', 'price', 'quantity', 'code', 'image', 'category_id', 'user_id', 'room_id' ];
 
     public function category()
     {

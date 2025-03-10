@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\Permission;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Filament\Resources\Pages\Page;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Grid;
+
 
 class UserResource extends Resource
 {
@@ -30,10 +32,8 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Tabs::make('User Details')
-                    ->tabs([
-                        Tab::make('General')
-                            ->icon('heroicon-m-user-plus')
+                Section::make('User Details')
+                        ->icon('heroicon-m-user-plus')
                             ->schema([
                                 Forms\Components\TextInput::make('name')
                                     ->required()
@@ -53,21 +53,37 @@ class UserResource extends Resource
                                     ->required(fn (Page $livewire) => ($livewire instanceof Pages\CreateUser))
                                     ->maxLength(255),
                             ]),
-                        Tab::make('Roles & Permissions')
+                        Section::make('Roles & Permissions')
                             ->icon('heroicon-m-shield-check')
                             ->schema([
                                 Select::make('roles')
                                     ->multiple()
                                     ->relationship('roles', 'name')
-                                    ->preload(),
+                                    ->preload()
+                                    ->searchable(),
                                 Select::make('permissions')
                                     ->multiple()
-                                    ->relationship('permissions', 'name')
-                                    ->preload(),
-                            ]),
-                    ]),
-            ]);
-    }
+                                    ->relationship('permissions', 'id')
+                                    ->preload()
+                                    ->options(function () {
+                                        return [
+                                            'Category Permissions' => Permission::where('name', 'like', '%Category%')
+                                                ->pluck('name', 'id')
+                                                ->toArray(),
+                                            'Inventory Permissions' => Permission::where('name', 'like', '%Inventory%')
+                                                ->pluck('name', 'id')
+                                                ->toArray(),
+                                            'Room Permissions' => Permission::where('name', 'like', '%Room%')
+                                                ->pluck('name', 'id')
+                                                ->toArray(),
+                                        ];
+                                    })
+                                    ->label('Permissions')
+                                    ->searchable(),
+                            ])->columns(2),
+                        ]);
+            
+        }
 
     public static function table(Table $table): Table
     {
@@ -80,6 +96,7 @@ class UserResource extends Resource
                     ->label('Role')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->icon('heroicon-m-envelope')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d-M-Y')
@@ -94,12 +111,18 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])
+                ->tooltip('Actions'),
+                Tables\Actions\RestoreAction::make(), 
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }

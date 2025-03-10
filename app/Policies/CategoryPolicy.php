@@ -14,7 +14,7 @@ class CategoryPolicy
     public function viewAny(User $user): bool
     {
         if ($user->hasRole(['admin', 'Editor']) || 
-            $user->hasPermissionTo('View Categories')) {
+            $user->hasPermissionTo('View Category')) {
             return true;
         }
         return false;
@@ -26,7 +26,7 @@ class CategoryPolicy
     public function view(User $user, Category $category): bool
     {
         if ($user->hasRole(['admin', 'Editor']) || 
-            $user->hasPermissionTo('View Categories')) {
+            $user->hasPermissionTo('View Category')) {
             return true;
         }
         return false;
@@ -38,7 +38,7 @@ class CategoryPolicy
     public function create(User $user): bool
     {
         if ($user->hasRole(['admin', 'Editor']) ||
-            $user->hasPermissionTo('Create Categories')) {
+            $user->hasPermissionTo('Create Category')) {
             return true;
         }
         return false;
@@ -50,7 +50,7 @@ class CategoryPolicy
     public function update(User $user, Category $category): bool
     {
         if ($user->hasRole(['admin', 'Editor']) ||
-            $user->hasPermissionTo('Edit Categories')) {
+            $user->hasPermissionTo('Edit Category')) {
             return true;
         }
         return false;
@@ -62,7 +62,7 @@ class CategoryPolicy
     public function delete(User $user, Category $category): bool
     {
         if ($user->hasRole(['admin', 'Editor']) ||
-            $user->hasPermissionTo('Delete Categories')) {
+            $user->hasPermissionTo('Delete Category')) {
             return true;
         }
         return false;  
@@ -82,7 +82,7 @@ class CategoryPolicy
     public function forceDelete(User $user, Category $category): bool
     {
         if ($user->hasRole(['admin', 'Editor']) ||
-            $user->hasPermissionTo('Delete Categories')) {
+            $user->hasPermissionTo('Delete Category')) {
             return true;
     }
     return false;

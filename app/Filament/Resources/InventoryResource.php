@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Room;
 use App\Models\Category;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,20 +30,33 @@ class InventoryResource extends Resource
         return $form       
             ->schema([
                 Forms\Components\Section::make('User')
+                    ->icon('heroicon-m-user')
                     ->schema([
                         Forms\Components\Select::make('user_id')
                             ->placeholder('Select user')
                             ->required()
-                            ->label('User')
+                            ->label('User Name')
                             ->options(User::all()->pluck('name', 'id'))
                             ->searchable(),
                     ]),
+                    Forms\Components\Section::make('Category')
+                        ->icon('heroicon-m-archive-box')
+                        ->schema([
+                            Forms\Components\Select::make('category_id')
+                                ->label('Category')
+                                ->options(Category::all()->pluck('name', 'id'))
+                                ->placeholder('Select category')
+                                ->required()
+                                ->searchable(),                             
+                    ]),
+
                 Forms\Components\Section::make('Inventory Details')
+                    ->icon('heroicon-m-inbox-stack')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('Inventory name'),
+                            ->placeholder('Inventory name or Brand'),
                         Forms\Components\TextInput::make('code')
                             ->required()
                             ->unique(ignoreRecord: true)
@@ -51,38 +65,18 @@ class InventoryResource extends Resource
                         Forms\Components\TextInput::make('quantity')
                             ->required()
                             ->numeric()
-                            ->placeholder('Quantity of inventory'),
+                            ->placeholder('Amount of inventory'),
                         Forms\Components\FileUpload::make('image')
                             ->directory('images')
                             ->image()
                             ->visibility('public'),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Category')
-                    ->schema([
-                        Forms\Components\Select::make('category_id')
-                            ->options(Category::all()->pluck('name', 'id'))
-                            ->placeholder('Select category')
-                            ->required()
-                            ->searchable()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->unique(ignoreRecord: true)
-                                    ->maxLength(255)
-                                    ->placeholder('Category name'),
-                                Forms\Components\Textarea::make('description')
-                                    ->placeholder('Category description')
-                                    ->columnSpanFull()
-                                    ->autosize(),
-                            ])
-                            ->required(),
-                    ]),
-
                 Forms\Components\Section::make('Location')
+                    ->icon('heroicon-m-building-office')
                     ->schema([
                         Forms\Components\Select::make('room_id')
-                            ->placeholder('Select room, location')
+                            ->placeholder('Select Room, Location')
                             ->label('Room')
                             ->options(Room::all()->mapWithKeys(function ($room) {
                                 return [$room->id => "{$room->name}, {$room->Location}"];
@@ -128,18 +122,27 @@ class InventoryResource extends Resource
                     ->dateTime('d-M-Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime('d-M-Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                //    
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])
+                ->tooltip('Actions'), 
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }
