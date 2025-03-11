@@ -138,6 +138,7 @@ class InventoryResource extends Resource
                 ])
                 ->tooltip('Actions'), 
                 Tables\Actions\RestoreAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

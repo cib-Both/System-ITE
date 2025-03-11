@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Category;
+use App\Models\Room;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class CategoryPolicy
+class RoomPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -14,7 +14,7 @@ class CategoryPolicy
     public function viewAny(User $user): bool
     {
         if ($user->hasRole('admin') || 
-            $user->hasPermissionTo('View Category')) {
+            $user->hasPermissionTo('View Room')) {
             return true;
         }
         return false;
@@ -23,10 +23,10 @@ class CategoryPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Category $category): bool
+    public function view(User $user, Room $room): bool
     {
         if ($user->hasRole('admin') || 
-            $user->hasPermissionTo('View Category')) {
+            $user->hasPermissionTo('View Room')) {
             return true;
         }
         return false;
@@ -37,8 +37,8 @@ class CategoryPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRole('admin') ||
-            $user->hasPermissionTo('Create Category')) {
+        if ($user->hasRole('admin') || 
+            $user->hasPermissionTo('Create Room')) {
             return true;
         }
         return false;
@@ -47,10 +47,10 @@ class CategoryPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Category $category): bool
+    public function update(User $user, Room $room): bool
     {
-        if ($user->hasRole('admin') ||
-            $user->hasPermissionTo('Edit Category')) {
+        if ($user->hasRole('admin') || 
+            $user->hasPermissionTo('Edit Room')) {
             return true;
         }
         return false;
@@ -59,22 +59,10 @@ class CategoryPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Category $category): bool
+    public function delete(User $user, Room $room): bool
     {
-        if ($user->hasRole('admin') ||
-            $user->hasPermissionTo('Delete Category')) {
-            return true;
-        }
-        return false;  
-    }
-
-    /**
-     * Determine whether the user can delete any models.
-     */
-    public function deleteAny(User $user): bool
-    {
-        if ($user->hasRole('admin') ||
-            $user->hasPermissionTo('Delete Category')) {
+        if ($user->hasRole('admin') || 
+            $user->hasPermissionTo('Delete Room')) {
             return true;
         }
         return false;
@@ -83,7 +71,7 @@ class CategoryPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Category $category): bool
+    public function restore(User $user, Room $room): bool
     {
         return false;
     }
@@ -91,12 +79,12 @@ class CategoryPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Category $category): bool
+    public function forceDelete(User $user, Room $room): bool
     {
-        if ($user->hasRole('admin') ||
-            $user->hasPermissionTo('Delete Category')) {
+        if ($user->hasRole('admin') || 
+            $user->hasPermissionTo('Delete Room')) {
             return true;
-    }
-    return false;
+        }
+        return false;
     }
 }

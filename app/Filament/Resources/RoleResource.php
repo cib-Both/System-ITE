@@ -5,22 +5,18 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
 use App\Models\Permission;
-use Faker\Provider\ar_EG\Text;
 use Filament\Forms;
-use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Models\Role;
-use Doctrine\DBAL\Query\From;
-use Faker\Core\Color;
-use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\Role;
+use Dom\Text;
 
 class RoleResource extends Resource
 {
@@ -33,38 +29,71 @@ class RoleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Section::make('Role Details')
-            ->icon('heroicon-m-shield-check')
             ->schema([
-                TextInput::make('name')
-                    ->label('Name')
-                    ->required()
-                    ->placeholder('Role name')
-                    ->maxLength(100)
-                    ->unique(ignoreRecord: true),
+                Section::make('Role Details')
+                    ->icon('heroicon-m-shield-check')
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Name')
+                            ->required()
+                            ->placeholder('Role name')
+                            ->maxLength(100)
+                            ->unique(ignoreRecord: true),
+                    ]),
 
-                Select::make('permissions')
-                    ->multiple()
-                    ->relationship('permissions', 'id')
-                    ->preload()
-                    ->options(function () {
-                        return [
-                            'Category Permissions' => Permission::where('name', 'like', '%Category%')
-                                ->pluck('name', 'id')
-                                ->toArray(),
-                            'Inventory Permissions' => Permission::where('name', 'like', '%Inventory%')
-                                ->pluck('name', 'id')
-                                ->toArray(),
-                            'Room Permissions' => Permission::where('name', 'like', '%Room%')
-                                ->pluck('name', 'id')
-                                ->toArray(),
-                        ];
-                    })
-                    ->label('Permissions')
-                    ->searchable(),
-            ]),
-        ]);
+                Section::make('Category')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%Category%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
+                    ]),
+
+                Section::make('Inventory')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%Inventory%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
+                    ]),
+
+                Section::make('Room')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%Room%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
+                    ]),
+                Section::make('User')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%User%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
+                    ]),
+                Section::make('Role')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%Role%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
+                    ]),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -72,15 +101,15 @@ class RoleResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                ->badge()
-                ->sortable()
-                ->searchable(),
+                    ->badge()
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('guard_name')
-                ->color('primary'),
+                    ->color('primary'),
                 TextColumn::make('created_at')
-                ->dateTime('d-M-Y'),
+                    ->dateTime('d-M-Y'),
                 TextColumn::make('updated_at')
-                ->dateTime('d-M-Y'),        
+                    ->dateTime('d-M-Y'),
             ])
             ->filters([
                 //
@@ -91,11 +120,11 @@ class RoleResource extends Resource
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ])
-                ->tooltip('Actions'), 
+                ->tooltip('Actions'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -120,5 +149,4 @@ class RoleResource extends Resource
     {
         return parent::getEloquentQuery()->where('name', '!=', 'admin');
     }
- 
 }

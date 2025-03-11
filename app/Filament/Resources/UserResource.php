@@ -67,6 +67,12 @@ class UserResource extends Resource
                                     ->preload()
                                     ->options(function () {
                                         return [
+                                            'User Permissions' => Permission::where('name', 'like', '%User%')
+                                                ->pluck('name', 'id')
+                                                ->toArray(),
+                                            'Role Permissions' => Permission::where('name', 'like', '%Role%')
+                                                ->pluck('name', 'id')
+                                                ->toArray(),
                                             'Category Permissions' => Permission::where('name', 'like', '%Category%')
                                                 ->pluck('name', 'id')
                                                 ->toArray(),
@@ -94,6 +100,7 @@ class UserResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Role')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->icon('heroicon-m-envelope')
@@ -117,7 +124,8 @@ class UserResource extends Resource
                     Tables\Actions\DeleteAction::make(),
                 ])
                 ->tooltip('Actions'),
-                Tables\Actions\RestoreAction::make(), 
+                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\ForceDeleteAction::make() 
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
