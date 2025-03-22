@@ -44,10 +44,22 @@ class InventoryResource extends Resource
                         ->schema([
                             Forms\Components\Select::make('category_id')
                                 ->label('Category')
-                                ->options(Category::all()->pluck('name', 'id'))
                                 ->placeholder('Select category')
                                 ->required()
-                                ->searchable(),                             
+                                ->searchable()
+                                ->relationship('category' ,'name')
+                                ->createOptionForm([
+                                    Forms\Components\TextInput::make('name')
+                                        ->required()
+                                        ->unique(ignoreRecord: true)
+                                        ->maxLength(255)
+                                        ->placeholder('Category name'),
+                                    Forms\Components\Textarea::make('description')
+                                        ->placeholder('Description')
+                                        ->columnSpanFull()
+                                        ->autosize()
+                                ])
+                                ->preload(),                             
                     ]),
 
                 Forms\Components\Section::make('Inventory Details')

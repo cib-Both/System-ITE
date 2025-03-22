@@ -38,7 +38,7 @@ class UserResource extends Resource
                                 Forms\Components\TextInput::make('name')
                                     ->required()
                                     ->maxLength(255)
-                                    ->placeholder('User name'),
+                                    ->placeholder('Full name'),
                                 Forms\Components\TextInput::make('email')
                                     ->email()
                                     ->placeholder('Email')
