@@ -5,98 +5,67 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\InventoryResource\Pages;
 use App\Filament\Resources\InventoryResource\RelationManagers;
 use App\Models\Inventory;
-use App\Models\User;
-use App\Models\Room;
-use App\Models\Category;
+use Dom\Text;
 use Filament\Forms;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Split;
 
 class InventoryResource extends Resource
 {
     protected static ?string $model = Inventory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
-    protected static ?string $navigationGroup = 'Inventory Management';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
-        return $form       
+        return $form
             ->schema([
-                Forms\Components\Section::make('User')
-                    ->icon('heroicon-m-user')
+                Section::make('Inventory Information')
+                    ->columns(2)
                     ->schema([
-                        Forms\Components\Select::make('user_id')
-                            ->placeholder('Select user')
-                            ->required()
-                            ->label('User Name')
-                            ->options(User::all()->pluck('name', 'id'))
-                            ->searchable(),
-                    ]),
-                    Forms\Components\Section::make('Category')
-                        ->icon('heroicon-m-archive-box')
-                        ->schema([
-                            Forms\Components\Select::make('category_id')
-                                ->label('Category')
-                                ->placeholder('Select category')
-                                ->required()
-                                ->searchable()
-                                ->relationship('category' ,'name')
-                                ->createOptionForm([
-                                    Forms\Components\TextInput::make('name')
-                                        ->required()
-                                        ->unique(ignoreRecord: true)
-                                        ->maxLength(255)
-                                        ->placeholder('Category name'),
-                                    Forms\Components\Textarea::make('description')
-                                        ->placeholder('Description')
-                                        ->columnSpanFull()
-                                        ->autosize()
-                                ])
-                                ->preload(),                             
-                    ]),
-
-                Forms\Components\Section::make('Inventory Details')
-                    ->icon('heroicon-m-inbox-stack')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255)
-                            ->placeholder('Inventory name or Brand'),
-                        Forms\Components\TextInput::make('code')
-                            ->required()
+                        Select::make('product_id')
+                            ->label('Product')
+                            ->placeholder('Select Product')
+                            ->relationship('product', 'model')
+                            ->searchable()
+                            ->native(false)
+                            ->preload()
+                            ->required(),
+                        TextInput::make('serial_number')
+                            ->label('Serial Number')
+                            ->placeholder('SN')
                             ->unique(ignoreRecord: true)
-                            ->maxLength(255)
-                            ->placeholder('Code of inventory'),
-                        Forms\Components\TextInput::make('quantity')
-                            ->required()
+                            ->required(),
+                        TextInput::make('quantity')
+                            ->label('Quantity')
                             ->numeric()
-                            ->placeholder('Amount of inventory'),
-                        Forms\Components\FileUpload::make('image')
-                            ->directory('images')
-                            ->image()
-                            ->visibility('public'),
-                    ])->columns(2),
-
-                Forms\Components\Section::make('Location')
-                    ->icon('heroicon-m-building-office')
-                    ->schema([
-                        Forms\Components\Select::make('room_id')
-                            ->placeholder('Select Room, Location')
-                            ->label('Room')
-                            ->options(Room::all()->mapWithKeys(function ($room) {
-                                return [$room->id => "{$room->name}, {$room->Location}"];
-                            }))
-                            ->required()
-                            ->searchable(),
+                            ->default(1),
                     ]),
-
+                Split::make([
+                    Section::make()
+                        ->columns(1)
+                        ->schema([
+                            Select::make('status')
+                                ->label('Status')
+                                ->placeholder('Select Status')
+                                ->native(false)
+                                ->options([
+                                    'available' => 'Available',
+                                    'loaned' => 'Loaned',
+                                    'damaged' => 'Damaged',
+                                ])
+                                ->default('available')
+                                ->required(),
+                        ]),
+                    ]),             
             ]);
     }
 
@@ -104,28 +73,26 @@ class InventoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image')
-                    ->label('Image')
-                    ->disk('public')
-                    ->width('40px')
-                    ->height('40px'),
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('category.name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('user.roles.name')
-                    ->label('Role'),
-                Tables\Columns\TextColumn::make('quantity'),
-                Tables\Columns\TextColumn::make('room.name')
-                    ->label('Room')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('room.Location')
-                    ->label('Location')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('product.brand')
+                    ->searchable()
+                    ->label('Product Brand'),
+                Tables\Columns\TextColumn::make('product.model')
+                    ->searchable()
+                    ->label('Product Model'),
+                Tables\Columns\TextColumn::make('serial_number')
+                    ->searchable()
+                    ->label('Serial Number'),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->sortable()
+                    ->label('Quantity'),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'available' => 'success',
+                        'loaned' => 'warning',
+                        'damaged' => 'danger',
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d-M-Y')
                     ->sortable()
@@ -134,28 +101,16 @@ class InventoryResource extends Resource
                     ->dateTime('d-M-Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime('d-M-Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //    
+                //
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
-                ->tooltip('Actions'), 
-                Tables\Actions\RestoreAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }

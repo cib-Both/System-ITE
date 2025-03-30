@@ -2,28 +2,29 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inventory extends Model
 {
-    use SoftDeletes;
+    use HasFactory;
 
-    protected $fillable = ['name', 'price', 'quantity', 'code', 'image', 'category_id', 'user_id', 'room_id' ];
+    protected $fillable = ['product_id', 'serial_number', 'quantity', 'status' ];
 
-    public function category()
+    public function product()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Product::class);
     }
 
-    public function user()
+    public function loans()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(Loan::class);
     }
 
-    public function room()
+    public function inventory()
     {
-        return $this->belongsTo(Room::class);
+        return $this->belongsTo(Inventory::class);
     }
+
 
 }

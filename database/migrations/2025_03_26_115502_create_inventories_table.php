@@ -13,14 +13,10 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('room_id')->constrained()->onDelete('cascade');
-            
-            $table->string('name');
-            $table->string('code')->unique();
-            $table->integer('quantity')->default(0);
-            $table->string('image')->nullable();           
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->string('serial_number', 50)->unique();
+            $table->integer('quantity')->default(1);
+            $table->enum('status', ['available', 'loaned', 'damaged'])->default('available');
             $table->timestamps();
         });
     }
