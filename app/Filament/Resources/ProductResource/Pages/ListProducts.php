@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\IconPosition;
 
 class ListProducts extends ListRecords
 {
@@ -13,7 +14,10 @@ class ListProducts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Add Product')
+                ->icon('heroicon-o-plus')
+                ->iconPosition(IconPosition::After),
         ];
     }
 }

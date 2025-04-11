@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PermissionResource\Pages;
 use App\Filament\Resources\PermissionResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\IconPosition;
 
 class ListPermissions extends ListRecords
 {
@@ -13,7 +14,10 @@ class ListPermissions extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Create Permission')
+                ->icon('heroicon-o-plus')
+                ->iconPosition(IconPosition::After),
         ];
     }
 }

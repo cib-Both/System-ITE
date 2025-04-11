@@ -22,7 +22,9 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box-arrow-down';
+    protected static ?string $navigationGroup = 'Inventory Management';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -35,6 +37,21 @@ class ProductResource extends Resource
                             ->label('Supplier')
                             ->placeholder('Select Supplier')
                             ->relationship('supplier', 'name')
+                            ->createOptionForm([
+                                TextInput::make('name')
+                                    ->label('Supplier Name')
+                                    ->placeholder('Full Name')
+                                    ->required(),
+                                TextInput::make('email')
+                                    ->label('Email')
+                                    ->placeholder('example@gmail.com')
+                                    ->email()
+                                    ->required(),
+                                TextInput::make('phone')
+                                    ->label('Phone Number')
+                                    ->placeholder('Phone Number')
+                                    ->required(),
+                            ])    
                             ->searchable()
                             ->native(false)
                             ->preload()
@@ -43,6 +60,17 @@ class ProductResource extends Resource
                             ->label('Category')
                             ->placeholder('Select Category')
                             ->relationship('category', 'name')
+                            ->createOptionForm([
+                                TextInput::make('name')
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->maxLength(255)
+                                    ->placeholder('Category name'),
+                                Textarea::make('description')
+                                    ->placeholder('Description')
+                                    ->columnSpanFull()
+                                    ->autosize()
+                            ])
                             ->searchable()
                             ->native(false)
                             ->preload()
@@ -96,6 +124,7 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

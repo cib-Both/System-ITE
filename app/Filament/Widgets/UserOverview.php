@@ -14,6 +14,7 @@ use Filament\Tables\Actions\Action;
 class UserOverview extends BaseWidget
 {
     protected static ?string $heading = 'New Users';
+    protected static ?int $sort = 3;
 
     public function table(Table $table): Table
     {

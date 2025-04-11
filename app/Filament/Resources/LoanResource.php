@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\LoanExporter;
 use App\Filament\Resources\LoanResource\Pages;
 use App\Filament\Resources\LoanResource\RelationManagers;
 use App\Models\Inventory;
@@ -19,6 +20,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Split;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Columns\SelectColumn;
 
 
@@ -27,7 +30,9 @@ class LoanResource extends Resource
 {
     protected static ?string $model = Loan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-up-on-square-stack';
+    protected static ?string $navigationGroup = 'Transaction';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -37,7 +42,7 @@ class LoanResource extends Resource
                     ->columns(4)
                     ->schema([
                         TextInput::make('name')
-                            ->label('Name')
+                            ->label('Full Name')
                             ->placeholder('Full Name')
                             ->required(),
                         TextInput::make('position')
@@ -51,6 +56,12 @@ class LoanResource extends Resource
                             ->label('Department')
                             ->placeholder('Select Department')
                             ->relationship('department', 'name')
+                            ->createOptionForm([
+                                TextInput::make('name')
+                                    ->label('Department Name')
+                                    ->placeholder('Department Name')
+                                    ->required(),
+                            ])
                             ->searchable()
                             ->preload()
                             ->native(false)
@@ -94,8 +105,7 @@ class LoanResource extends Resource
                             ->label('Brand')
                             ->placeholder('Product Brand')
                             ->disabled()
-                            ->required(),
-                        
+                            ->required(),                       
                             TextInput::make('product_model')
                             ->label('Model')
                             ->placeholder('Product Model')
@@ -150,17 +160,30 @@ class LoanResource extends Resource
                 Tables\Columns\TextColumn::make('department.name')
                     ->searchable()
                     ->label('Department'),
+                Tables\Columns\TextColumn::make('inventory.product.category.name')
+                    ->searchable()
+                    ->label('Category'),
+                Tables\Columns\TextColumn::make('inventory.product.brand')
+                    ->searchable()
+                    ->label('Brand'),
                 Tables\Columns\TextColumn::make('inventory.product.model')
                     ->searchable()
-                    ->label('Product Model'),
+                    ->label('Model'),
                 Tables\Columns\TextColumn::make('inventory.serial_number')
                     ->searchable()
                     ->label('Serial Number'),
+                Tables\Columns\TextColumn::make('inventory.quantity')
+                    ->searchable()
+                    ->label('Quantity'),
                 Tables\Columns\TextColumn::make('loan_date')
                     ->dateTime('d-M-Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('return_date')
+                    ->dateTime('d-M-Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('delete_at')
                     ->dateTime('d-M-Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -175,14 +198,28 @@ class LoanResource extends Resource
             ->filters([
                 //
             ])
+
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make()
+                ])
+                ->tooltip('Actions'),
+                Tables\Actions\RestoreAction::make(), 
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make()
                 ]),
+                Tables\Actions\ExportBulkAction::make()
+                    ->label('Export')
+                    ->icon('heroicon-m-arrow-down-tray')
+                    ->iconPosition(IconPosition::After)
+                    ->exporter(LoanExporter::class)
+                    ->color('success'),
             ]);
     }
 

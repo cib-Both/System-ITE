@@ -53,7 +53,7 @@ class UserResource extends Resource
                                     ->required(fn (Page $livewire) => ($livewire instanceof Pages\CreateUser))
                                     ->maxLength(255),
                             ]),
-                        Section::make('Roles & Permissions')
+                        Section::make('Roles')
                             ->icon('heroicon-m-shield-check')
                             ->schema([
                                 Select::make('roles')
@@ -61,31 +61,31 @@ class UserResource extends Resource
                                     ->relationship('roles', 'name')
                                     ->preload()
                                     ->searchable(),
-                                Select::make('permissions')
-                                    ->multiple()
-                                    ->relationship('permissions', 'id')
-                                    ->preload()
-                                    ->options(function () {
-                                        return [
-                                            'User Permissions' => Permission::where('name', 'like', '%User%')
-                                                ->pluck('name', 'id')
-                                                ->toArray(),
-                                            'Role Permissions' => Permission::where('name', 'like', '%Role%')
-                                                ->pluck('name', 'id')
-                                                ->toArray(),
-                                            'Category Permissions' => Permission::where('name', 'like', '%Category%')
-                                                ->pluck('name', 'id')
-                                                ->toArray(),
-                                            'Inventory Permissions' => Permission::where('name', 'like', '%Inventory%')
-                                                ->pluck('name', 'id')
-                                                ->toArray(),
-                                            'Room Permissions' => Permission::where('name', 'like', '%Room%')
-                                                ->pluck('name', 'id')
-                                                ->toArray(),
-                                        ];
-                                    })
-                                    ->label('Permissions')
-                                    ->searchable(),
+                                // Select::make('permissions')
+                                //     ->multiple()
+                                //     ->relationship('permissions', 'id')
+                                //     ->preload()
+                                //     ->options(function () {
+                                //         return [
+                                //             'User Permissions' => Permission::where('name', 'like', '%User%')
+                                //                 ->pluck('name', 'id')
+                                //                 ->toArray(),
+                                //             'Role Permissions' => Permission::where('name', 'like', '%Role%')
+                                //                 ->pluck('name', 'id')
+                                //                 ->toArray(),
+                                //             'Category Permissions' => Permission::where('name', 'like', '%Category%')
+                                //                 ->pluck('name', 'id')
+                                //                 ->toArray(),
+                                //             'Inventory Permissions' => Permission::where('name', 'like', '%Inventory%')
+                                //                 ->pluck('name', 'id')
+                                //                 ->toArray(),
+                                //             'Room Permissions' => Permission::where('name', 'like', '%Room%')
+                                //                 ->pluck('name', 'id')
+                                //                 ->toArray(),
+                                //         ];
+                                //     })
+                                //     ->label('Permissions')
+                                //     ->searchable(),
                             ])->columns(2),
                         ]);
             
@@ -125,7 +125,7 @@ class UserResource extends Resource
                 ])
                 ->tooltip('Actions'),
                 Tables\Actions\RestoreAction::make(),
-                Tables\Actions\ForceDeleteAction::make() 
+                Tables\Actions\ForceDeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

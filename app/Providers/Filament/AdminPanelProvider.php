@@ -25,8 +25,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->login()           
-            ->profile()
+            ->login()
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
@@ -34,7 +33,8 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Indigo,
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
-            ])
+                ])
+            ->databaseNotifications()
             ->brandLogo(asset('images/logo.png'))
             ->brandLogoHeight('6rem')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

@@ -20,14 +20,15 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Split;
-
-
+use Filament\Notifications\Notification;
 
 class PurchaseResource extends Resource
 {
     protected static ?string $model = Purchase::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
+    protected static ?string $navigationGroup = 'Transaction';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -44,13 +45,28 @@ class PurchaseResource extends Resource
                             ->label('Supplier')
                             ->placeholder('Select Supplier')
                             ->relationship('supplier', 'name')
+                            ->createOptionForm([
+                                TextInput::make('name')
+                                    ->label('Supplier Name')
+                                    ->placeholder('Full Name')
+                                    ->required(),
+                                TextInput::make('email')
+                                    ->label('Email')
+                                    ->placeholder('example@gmail.com')
+                                    ->email()
+                                    ->required(),
+                                TextInput::make('phone')
+                                    ->label('Phone Number')
+                                    ->placeholder('Phone Number')
+                                    ->required(),
+                            ]) 
                             ->searchable()
                             ->preload()
                             ->required(),
                         DatePicker::make('purchase_date')
                             ->native(false)
                             ->closeOnDateSelection()
-                            ->displayFormat('M, d, Y')
+                            ->displayFormat('M/ d/ Y')
                             ->placeholder('MM/DD/YYYY'),
                     ]),
                 Section::make('Product Detail')
@@ -118,7 +134,22 @@ class PurchaseResource extends Resource
                                     'delivered' => 'Delivered',
                                     'cancelled' => 'Cancelled',
                                 ])
-                                ->default('pending'),
+                                ->default('pending')
+                                ->reactive()
+                                // ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered') this line will disable the select when the status is delivered
+                                ->afterStateUpdated(function ($state, callable $set, ?Purchase $record) {
+                                    if ($record && $record->status === 'delivered' && $state !== 'delivered') {
+                                        // Prevent changing the status from 'delivered' to any other status
+                                        $set('status', 'delivered');
+                                        Notification::make()
+                                            ->title('Status Change Not Allowed')
+                                            ->body('You cannot change the status of a delivered purchase.')
+                                            ->warning()
+                                            ->send();
+                                    } elseif ($record && $state === 'delivered') {
+                                        $record->update(['status' => 'delivered']);
+                                    }
+                                })
                         ])
                     ]) 
             ]);
@@ -134,10 +165,6 @@ class PurchaseResource extends Resource
                 Tables\Columns\TextColumn::make('supplier.name')
                     ->searchable()
                     ->label('Supplier'),
-                Tables\Columns\TextColumn::make('purchase_date')
-                    ->dateTime('M, d, Y')
-                    ->sortable()
-                    ->label('Purchase Date'),
                 Tables\Columns\TextColumn::make('total_qty')
                     ->sortable()
                     ->label('Total Quantity'),
@@ -145,6 +172,10 @@ class PurchaseResource extends Resource
                     ->sortable()
                     ->label('Total Cost')
                     ->money('USD'),
+                Tables\Columns\TextColumn::make('purchase_date')
+                        ->dateTime('d-M-Y')
+                        ->sortable()
+                        ->label('Purchase Date'),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->label('Status')
@@ -166,8 +197,38 @@ class PurchaseResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\Action::make('view_invoice')
+                        ->icon('heroicon-o-document-text')
+                        ->color('warning')
+                        ->url(fn($record) => self::getUrl('invoice', ['record'=>$record->id])),
+                    ])->tooltip('Actions'),
+                Tables\Actions\Action::make('markAsDelivered')
+                        ->label('Mark to Delivered')
+                        ->icon('heroicon-o-clipboard-document-check')
+                        ->action(function (Purchase $record) {
+                            if ($record->status === 'delivered') {
+                                Notification::make()
+                                    ->title('Already Delivered')
+                                    ->body('This purchase is already marked as delivered.')
+                                    ->warning()
+                                    ->send();
+                                return;
+                            }
+                        
+                            $record->update(['status' => 'delivered']);
+                            // Send a success notification
+                            Notification::make()
+                            ->title('Inventory Added')
+                            ->body('The inventory has been successfully added for this purchase.')
+                            ->success()
+                            ->send();
+                        })
+                    ->requiresConfirmation(),
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -188,6 +249,7 @@ class PurchaseResource extends Resource
             'index' => Pages\ListPurchases::route('/'),
             'create' => Pages\CreatePurchase::route('/create'),
             'edit' => Pages\EditPurchase::route('/{record}/edit'),
+            'invoice' => Pages\Invoice::route('/{record}/invoice'),
         ];
     }
 

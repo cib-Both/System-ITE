@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SupplierResource\Pages;
 use App\Filament\Resources\SupplierResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\IconPosition;
 
 class ListSuppliers extends ListRecords
 {
@@ -13,7 +14,10 @@ class ListSuppliers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Add Supplier')
+                ->icon('heroicon-o-plus')
+                ->iconPosition(IconPosition::After),
         ];
     }
 }

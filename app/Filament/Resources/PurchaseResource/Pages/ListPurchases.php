@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PurchaseResource\Pages;
 use App\Filament\Resources\PurchaseResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\IconPosition;
 
 class ListPurchases extends ListRecords
 {
@@ -13,7 +14,10 @@ class ListPurchases extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Create Purchase')
+                ->icon('heroicon-o-plus')
+                ->iconPosition(IconPosition::After),
         ];
     }
 }
