@@ -179,6 +179,11 @@ class PurchaseResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->label('Status')
+                    ->icon(fn (string $state): ?string => match ($state) {
+                        'pending' => 'heroicon-m-clock',
+                        'cancelled' => 'heroicon-m-x-circle',
+                        'delivered' => 'heroicon-m-check-circle',
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'warning',
                         'delivered' => 'success',

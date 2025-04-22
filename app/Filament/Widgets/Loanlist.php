@@ -32,6 +32,7 @@ class Loanlist extends BaseWidget
             Tables\Columns\TextColumn::make('status')
                 ->badge()
                 ->label('Status')
+                ->icon('heroicon-m-play')
                 ->color(fn (string $state): string => match ($state) {
                     'active' => 'warning',
                 }),

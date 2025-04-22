@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-               if ($user->hasRole('admin') || 
+        if ($user->hasRole('admin') || 
             $user->hasPermissionTo('View User')) {
             return true;
         }
@@ -24,7 +24,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-                if ($user->hasRole('admin') || 
+        if ($user->hasRole('admin') || 
             $user->hasPermissionTo('View User')) {
             return true;
         }
@@ -98,7 +98,7 @@ class UserPolicy
     public function forceDelete(User $user, User $model): bool
     {
         if ($user->hasRole('admin') || 
-            $user->hasPermissionTo('Delete User')) {
+            $user->hasPermissionTo('Force Delete User')) {
             return true;
         }
         return false;

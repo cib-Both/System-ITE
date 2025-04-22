@@ -10,7 +10,7 @@ use App\Models\Purchase;
 
 class Purchaselist extends BaseWidget
 {
-    protected static ?string $heading = 'Purchase Pending List';
+    protected static ?string $heading = 'Purchase List';
     protected static ?int $sort = 1;
     public function table(Table $table): Table
     {
@@ -31,6 +31,10 @@ class Purchaselist extends BaseWidget
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->label('Status')
+                    ->icon(fn (string $state): ?string => match ($state) {
+                        'pending' => 'heroicon-m-clock',
+                        'cancelled' => 'heroicon-m-x-circle',
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'warning',
                         'cancelled' => 'danger',

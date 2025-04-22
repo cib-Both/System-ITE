@@ -90,6 +90,11 @@ class InventoryResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->icon(fn (string $state): ?string => match ($state) {
+                        'available' => 'heroicon-m-check-circle',
+                        'loaned' => 'heroicon-m-arrow-up-on-square-stack',
+                        'damaged' => 'heroicon-m-exclamation-circle',
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'available' => 'success',
                         'loaned' => 'warning',

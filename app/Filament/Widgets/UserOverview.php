@@ -31,12 +31,7 @@ class UserOverview extends BaseWidget
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime('d-M-Y'),
-            ])
-            ->actions([
-                Action::make('edit')
-                    ->label('View')
-                    ->url(fn (User $record): string => UserResource::getUrl('edit', ['record' => $record->id]))
-                    ->icon('heroicon-m-pencil-square'),
-            ]);         
+            ]);
     }
+
 }

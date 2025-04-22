@@ -190,6 +190,10 @@ class LoanResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->label('Status')
+                    ->icon(fn (string $state): ?string => match ($state) {
+                        'active' => 'heroicon-m-play',
+                        'returned' => 'heroicon-m-arrow-uturn-left',
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'active' => 'warning',
                         'returned' => 'success',

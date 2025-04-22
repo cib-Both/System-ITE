@@ -16,7 +16,6 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Role;
-use Dom\Text;
 
 class RoleResource extends Resource
 {
@@ -29,7 +28,7 @@ class RoleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
+            ->schema([               
                 Section::make('Role Details')
                     ->icon('heroicon-m-shield-check')
                     ->schema([
@@ -39,8 +38,33 @@ class RoleResource extends Resource
                             ->placeholder('Role name')
                             ->maxLength(100)
                             ->unique(ignoreRecord: true),
+                        TextInput::make('guard_name')
+                            ->label('Guard Name')
+                            ->required()
+                            ->disabled()
+                            ->default('web'),
+                        ])->columns(2),
+               
+                Section::make('User')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%User%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
                     ]),
-
+                Section::make('Role')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%Role%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
+                    ]),
                 Section::make('Category')
                     ->schema([
                         CheckboxList::make('permissions')
@@ -62,32 +86,51 @@ class RoleResource extends Resource
                             ->columns(2)
                             ->gridDirection('row'),
                     ]),
-
-                Section::make('Room')
+                Section::make('Loan')
                     ->schema([
                         CheckboxList::make('permissions')
                             ->relationship('permissions', 'id')
-                            ->options(Permission::where('name', 'like', '%Room%')->pluck('name', 'id')->toArray())
+                            ->options(Permission::where('name', 'like', '%Loan%')->pluck('name', 'id')->toArray())
                             ->label('Permissions')
                             ->bulkToggleable()
                             ->columns(2)
                             ->gridDirection('row'),
                     ]),
-                Section::make('User')
+                Section::make('Product')
                     ->schema([
                         CheckboxList::make('permissions')
                             ->relationship('permissions', 'id')
-                            ->options(Permission::where('name', 'like', '%User%')->pluck('name', 'id')->toArray())
+                            ->options(Permission::where('name', 'like', '%Product%')->pluck('name', 'id')->toArray())
                             ->label('Permissions')
                             ->bulkToggleable()
                             ->columns(2)
                             ->gridDirection('row'),
                     ]),
-                Section::make('Role')
+                Section::make('Department')
                     ->schema([
                         CheckboxList::make('permissions')
                             ->relationship('permissions', 'id')
-                            ->options(Permission::where('name', 'like', '%Role%')->pluck('name', 'id')->toArray())
+                            ->options(Permission::where('name', 'like', '%Department%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
+                    ]),
+                Section::make('Supplier')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%Supplier%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
+                    ]),
+                Section::make('Purchase')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%Purchase%')->pluck('name', 'id')->toArray())
                             ->label('Permissions')
                             ->bulkToggleable()
                             ->columns(2)
@@ -104,6 +147,11 @@ class RoleResource extends Resource
                     ->badge()
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('permissions_count')
+                    ->counts('permissions')
+                    ->label('Permissions')
+                    ->sortable()
+                    ->badge(),
                 TextColumn::make('guard_name')
                     ->color('primary'),
                 TextColumn::make('created_at')

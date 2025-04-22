@@ -52,13 +52,16 @@ class SupplierResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->label('Supplier Name'),
+                    ->label('Supplier Name')
+                    ->icon('heroicon-m-user'),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
+                    ->icon('heroicon-m-envelope')
                     ->label('Email'),
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable()
-                    ->label('Phone Number'),
+                    ->label('Phone Number')
+                    ->icon('heroicon-m-phone'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d-M-Y')
                     ->sortable()
