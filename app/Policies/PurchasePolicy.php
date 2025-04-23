@@ -38,7 +38,7 @@ class PurchasePolicy
     public function create(User $user): bool
     {
                 if ($user->hasRole('admin') ||
-            $user->hasPermissionTo('Edit Purchase')) {
+            $user->hasPermissionTo('Create Purchase')) {
             return true;
         }
         return false;

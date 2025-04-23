@@ -4,16 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PurchaseResource\Pages;
 use App\Filament\Resources\PurchaseResource\RelationManagers;
-use App\Models\Inventory;
 use App\Models\Purchase;
-use Dom\Text;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
@@ -21,6 +17,8 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Split;
 use Filament\Notifications\Notification;
+use Filament\Facades\Filament;
+
 
 class PurchaseResource extends Resource
 {
@@ -129,6 +127,7 @@ class PurchaseResource extends Resource
                             Select::make('status')
                                 ->label('Status')
                                 ->native(false)
+                                ->required()
                                 ->options([
                                     'pending' => 'Pending',
                                     'delivered' => 'Delivered',
@@ -139,17 +138,24 @@ class PurchaseResource extends Resource
                                 // ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered') this line will disable the select when the status is delivered
                                 ->afterStateUpdated(function ($state, callable $set, ?Purchase $record) {
                                     if ($record && $record->status === 'delivered' && $state !== 'delivered') {
-                                        // Prevent changing the status from 'delivered' to any other status
+                                        // Prevent changing from 'delivered' to another status
                                         $set('status', 'delivered');
                                         Notification::make()
                                             ->title('Status Change Not Allowed')
                                             ->body('You cannot change the status of a delivered purchase.')
                                             ->warning()
                                             ->send();
-                                    } elseif ($record && $state === 'delivered') {
+                                    } elseif ($record && $state === 'delivered' && $record->status !== 'delivered') {
+                                        // Allow changing TO delivered only if it's not already delivered
                                         $record->update(['status' => 'delivered']);
+                                
+                                        Notification::make()
+                                            ->title('Inventory Added')
+                                            ->body('The inventory has been successfully added for this purchase.')
+                                            ->success()
+                                            ->send();
                                     }
-                                })
+                                })                               
                         ])
                     ]) 
             ]);
@@ -210,28 +216,6 @@ class PurchaseResource extends Resource
                         ->color('warning')
                         ->url(fn($record) => self::getUrl('invoice', ['record'=>$record->id])),
                     ])->tooltip('Actions'),
-                Tables\Actions\Action::make('markAsDelivered')
-                        ->label('Mark to Delivered')
-                        ->icon('heroicon-o-clipboard-document-check')
-                        ->action(function (Purchase $record) {
-                            if ($record->status === 'delivered') {
-                                Notification::make()
-                                    ->title('Already Delivered')
-                                    ->body('This purchase is already marked as delivered.')
-                                    ->warning()
-                                    ->send();
-                                return;
-                            }
-                        
-                            $record->update(['status' => 'delivered']);
-                            // Send a success notification
-                            Notification::make()
-                            ->title('Inventory Added')
-                            ->body('The inventory has been successfully added for this purchase.')
-                            ->success()
-                            ->send();
-                        })
-                    ->requiresConfirmation(),
             ])
 
             ->bulkActions([
