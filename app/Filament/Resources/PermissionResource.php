@@ -46,25 +46,25 @@ class PermissionResource extends Resource
         return $table
             ->columns([
 
-                TextColumn::make('name')->sortable()->searchable(),
+                TextColumn::make('name')->sortable()->searchable()->icon('heroicon-m-key')->badge(),
                 TextColumn::make('created_at')->dateTime('d-M-Y')->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
-                ->tooltip('Actions'), 
+                // Tables\Actions\ActionGroup::make([
+                //     Tables\Actions\ViewAction::make(),
+                //     Tables\Actions\EditAction::make(),
+                //     Tables\Actions\DeleteAction::make(),
+                // ])
+                // ->tooltip('Actions'), 
                 
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -80,7 +80,7 @@ class PermissionResource extends Resource
         return [
             'index' => Pages\ListPermissions::route('/'),
             'create' => Pages\CreatePermission::route('/create'),
-            'edit' => Pages\EditPermission::route('/{record}/edit'),
+            // 'edit' => Pages\EditPermission::route('/{record}/edit'),
         ];
     }
 }

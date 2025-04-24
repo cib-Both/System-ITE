@@ -26,7 +26,7 @@ class PurchaseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
     protected static ?string $navigationGroup = 'Transaction';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -145,16 +145,9 @@ class PurchaseResource extends Resource
                                             ->body('You cannot change the status of a delivered purchase.')
                                             ->warning()
                                             ->send();
-                                    } elseif ($record && $state === 'delivered' && $record->status !== 'delivered') {
-                                        // Allow changing TO delivered only if it's not already delivered
-                                        $record->update(['status' => 'delivered']);
-                                
-                                        Notification::make()
-                                            ->title('Inventory Added')
-                                            ->body('The inventory has been successfully added for this purchase.')
-                                            ->success()
-                                            ->send();
-                                    }
+                                        } elseif ($record && $state === 'delivered') {
+                                            $record->update(['status' => 'delivered']);
+                                        }
                                 })                               
                         ])
                     ]) 
@@ -210,6 +203,7 @@ class PurchaseResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
+                    Tables\Actions\ViewAction::make(),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\Action::make('view_invoice')
                         ->icon('heroicon-o-document-text')
