@@ -6,7 +6,7 @@
 
     <title>ITE-system</title>
 
-    <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image" href="{{ asset('favicon.ico') }}">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -35,8 +35,8 @@
 
             <!-- Button -->
             <a href="{{ url('/admin') }}"
-               class="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold text-lg px-8 py-4 rounded-xl shadow-lg transition">
-               Go to Panel
+               class="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold text-xl px-8 py-4 rounded-xl shadow-lg transition">
+               Dashboard
                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                </svg>

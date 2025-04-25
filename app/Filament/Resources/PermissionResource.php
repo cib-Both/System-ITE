@@ -44,8 +44,8 @@ class PermissionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->deferLoading()
             ->columns([
-
                 TextColumn::make('name')->sortable()->searchable()->icon('heroicon-m-key')->badge(),
                 TextColumn::make('created_at')->dateTime('d-M-Y')->sortable(),
             ])

@@ -66,7 +66,8 @@ class PurchaseResource extends Resource
                             ->closeOnDateSelection()
                             ->displayFormat('M/ d/ Y')
                             ->placeholder('MM/DD/YYYY'),
-                    ]),
+                    ]) ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered'),
+
                 Section::make('Product Detail')
                     ->schema([
                         Repeater::make('products')
@@ -105,7 +106,8 @@ class PurchaseResource extends Resource
                                 $set('total_qty', $totalQty);
                                 $set('total_cost', $totalCost);
                             }),
-                    ]),
+                    ]) ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered'),
+
                     Section::make()
                     ->columns(2)
                     ->schema([
@@ -135,20 +137,7 @@ class PurchaseResource extends Resource
                                 ])
                                 ->default('pending')
                                 ->reactive()
-                                // ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered') this line will disable the select when the status is delivered
-                                ->afterStateUpdated(function ($state, callable $set, ?Purchase $record) {
-                                    if ($record && $record->status === 'delivered' && $state !== 'delivered') {
-                                        // Prevent changing from 'delivered' to another status
-                                        $set('status', 'delivered');
-                                        Notification::make()
-                                            ->title('Status Change Not Allowed')
-                                            ->body('You cannot change the status of a delivered purchase.')
-                                            ->warning()
-                                            ->send();
-                                        } elseif ($record && $state === 'delivered') {
-                                            $record->update(['status' => 'delivered']);
-                                        }
-                                })                               
+                                ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered')                             
                         ])
                     ]) 
             ]);
@@ -157,6 +146,7 @@ class PurchaseResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->deferLoading()
             ->columns([
                 Tables\Columns\TextColumn::make('invoice_number')
                     ->searchable()
@@ -202,8 +192,8 @@ class PurchaseResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
                     Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\Action::make('view_invoice')
                         ->icon('heroicon-o-document-text')
