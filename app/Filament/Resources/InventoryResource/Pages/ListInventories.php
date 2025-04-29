@@ -61,6 +61,13 @@ class ListInventories extends ListRecords
                 ->badgeColor('warning')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'damaged')),
 
+            'Lost' => Tab::make()
+                ->icon('heroicon-m-no-symbol')
+                ->iconPosition(IconPosition::Before)
+                ->badge(fn () => Inventory::where('status', '=', 'lost')->count())
+                ->badgeColor('danger')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'lost')),
+
             'Trash' => Tab::make()
                 ->icon('heroicon-m-trash')
                 ->iconPosition(IconPosition::Before)

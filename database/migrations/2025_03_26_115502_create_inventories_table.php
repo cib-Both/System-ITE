@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->string('serial_number', 50)->unique();
             $table->integer('quantity')->default(1);
-            $table->enum('status', ['available', 'loaned', 'damaged'])->default('available');
+            $table->enum('status', ['available', 'loaned', 'damaged', 'lost'])->default('available');
             $table->timestamps();
         });
     }

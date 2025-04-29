@@ -21,8 +21,8 @@ class StatsOverview extends BaseWidget
                 ->description('Inventory in This System')
                 ->descriptionIcon('heroicon-m-inbox-stack')
                 ->color('success'),
-            Stat::make('Total Purchase Order', Purchase::count())
-                ->description('All Purchase Orders')
+            Stat::make('Total Purchase', Purchase::count())
+                ->description('All Purchase')
                 ->descriptionIcon('heroicon-m-arrow-down-on-square-stack')
                 ->color('info'),
             Stat::make('Inventory Loan', Inventory::where('status', '!=', 'Available')->count())

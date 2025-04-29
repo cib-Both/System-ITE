@@ -63,6 +63,7 @@ class InventoryResource extends Resource
                                     'available' => 'Available',
                                     'loaned' => 'Loaned',
                                     'damaged' => 'Damaged',
+                                    'lost' => 'Lost',
                                 ])
                                 ->default('available')
                                 ->required(),
@@ -95,11 +96,13 @@ class InventoryResource extends Resource
                         'available' => 'heroicon-m-check-circle',
                         'loaned' => 'heroicon-m-arrow-up-on-square-stack',
                         'damaged' => 'heroicon-m-exclamation-circle',
+                        'lost' => 'heroicon-m-no-symbol',
                     })
                     ->color(fn (string $state): string => match ($state) {
                         'available' => 'success',
                         'loaned' => 'warning',
                         'damaged' => 'danger',
+                        'lost' => 'danger',
                     }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d-M-Y')
