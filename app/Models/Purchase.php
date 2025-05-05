@@ -10,9 +10,9 @@ class Purchase extends Model
 {
     use HasFactory;
 
-    protected $fillable = [ 'supplier_id','purchase_date', 'invoice_number', 'status','total_cost', 'total_qty' ];
+    protected $fillable = [ 'supplier_id','purchase_date', 'voucher_ref', 'status','total_cost', 'total_qty' ];
 
-    protected static function booted()
+protected static function booted()
 {
     static::updated(function (Purchase $purchase) {
         if ($purchase->status === 'delivered' && $purchase->product) {
@@ -21,7 +21,10 @@ class Purchase extends Model
                     'product_id' => $product->product_id,
                     'serial_number' => $product->serial_number,
                     'quantity' => $product->quantity,
+                    'unit_price' => $product->price,
+                    'purchase_id' => $purchase->id,
                     'status' => 'available',
+                    'remark' => 'not yet install',
                 ]);
             }
         }
@@ -38,6 +41,11 @@ class Purchase extends Model
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
+    }
+
+    public function inventory()
+    {
+        return $this->hasMany(Inventory::class);
     }
 
 }

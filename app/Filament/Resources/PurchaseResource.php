@@ -35,9 +35,8 @@ class PurchaseResource extends Resource
                 Section::make('Purchase Information')
                     ->columns(3)
                     ->schema([
-                        TextInput::make('invoice_number')
-                            ->label('Invoice No.')
-                            ->placeholder('No.')
+                        TextInput::make('voucher_ref')
+                            ->label('Voucher Ref.')
                             ->unique(ignoreRecord: true),
                         Select::make('supplier_id')
                             ->label('Supplier')
@@ -47,15 +46,6 @@ class PurchaseResource extends Resource
                                 TextInput::make('name')
                                     ->label('Supplier Name')
                                     ->placeholder('Full Name')
-                                    ->required(),
-                                TextInput::make('email')
-                                    ->label('Email')
-                                    ->placeholder('example@gmail.com')
-                                    ->email()
-                                    ->required(),
-                                TextInput::make('phone')
-                                    ->label('Phone Number')
-                                    ->placeholder('Phone Number')
                                     ->required(),
                             ]) 
                             ->searchable()
@@ -137,7 +127,7 @@ class PurchaseResource extends Resource
                                 ])
                                 ->default('pending')
                                 ->reactive()
-                                ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered')                             
+                                // ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered')                             
                         ])
                     ]) 
             ]);
@@ -148,9 +138,9 @@ class PurchaseResource extends Resource
         return $table
             ->deferLoading()
             ->columns([
-                Tables\Columns\TextColumn::make('invoice_number')
+                Tables\Columns\TextColumn::make('voucher_ref')
                     ->searchable()
-                    ->label('Invoice No.'),
+                    ->label('Voucher Ref.'),
                 Tables\Columns\TextColumn::make('supplier.name')
                     ->searchable()
                     ->label('Supplier'),
@@ -195,10 +185,10 @@ class PurchaseResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\Action::make('view_invoice')
-                        ->icon('heroicon-o-document-text')
-                        ->color('warning')
-                        ->url(fn($record) => self::getUrl('invoice', ['record'=>$record->id])),
+                    // Tables\Actions\Action::make('view_invoice')
+                    //     ->icon('heroicon-o-document-text')
+                    //     ->color('warning')
+                    //     ->url(fn($record) => self::getUrl('invoice', ['record'=>$record->id])),
                     ])->tooltip('Actions'),
             ])
 
@@ -222,7 +212,7 @@ class PurchaseResource extends Resource
             'index' => Pages\ListPurchases::route('/'),
             'create' => Pages\CreatePurchase::route('/create'),
             'edit' => Pages\EditPurchase::route('/{record}/edit'),
-            'invoice' => Pages\Invoice::route('/{record}/invoice'),
+            // 'invoice' => Pages\Invoice::route('/{record}/invoice'),
         ];
     }
 

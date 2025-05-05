@@ -21,7 +21,7 @@ class SupplierResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-link';
     protected static ?string $navigationGroup = 'Inventory Management';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {
@@ -33,15 +33,15 @@ class SupplierResource extends Resource
                         ->label('Supplier Name')
                         ->placeholder('Full Name')
                         ->required(),
-                    TextInput::make('email')
-                        ->label('Email')
-                        ->placeholder('example@gmail.com')
-                        ->email()
-                        ->required(),
-                    TextInput::make('phone')
-                        ->label('Phone Number')
-                        ->placeholder('Phone Number')
-                        ->required(),
+                    // TextInput::make('email')
+                    //     ->label('Email')
+                    //     ->placeholder('example@gmail.com')
+                    //     ->email()
+                    //     ->required(),
+                    // TextInput::make('phone')
+                    //     ->label('Phone Number')
+                    //     ->placeholder('Phone Number')
+                    //     ->required(),
                 ])
             ]);
     }
@@ -55,14 +55,6 @@ class SupplierResource extends Resource
                     ->searchable()
                     ->label('Supplier Name')
                     ->icon('heroicon-m-user'),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable()
-                    ->icon('heroicon-m-envelope')
-                    ->label('Email'),
-                Tables\Columns\TextColumn::make('phone')
-                    ->searchable()
-                    ->label('Phone Number')
-                    ->icon('heroicon-m-phone'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d-M-Y')
                     ->sortable()

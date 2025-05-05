@@ -14,6 +14,10 @@ class InventoryExporter extends Exporter
     public static function getColumns(): array
     {
         return [
+            ExportColumn::make('class_of_asset')
+                ->label('Class of Asset'),
+            ExportColumn::make('asset_identity_no')
+                ->label('Asset Identity No'),
             ExportColumn::make('product.category.name')
                 ->label('Category'),
             ExportColumn::make('product.brand')
@@ -23,8 +27,24 @@ class InventoryExporter extends Exporter
             ExportColumn::make('product.spec')
                 ->label('Specification'),
             ExportColumn::make('serial_number'),
+            ExportColumn::make('purchase.purchase_date')
+                ->label('Purchase Date'),
+            ExportColumn::make('purchase.voucher_ref')
+                ->label('Voucher Ref'),
             ExportColumn::make('quantity'),
+            ExportColumn::make('unit_price')
+                ->label('Unit Price'),
+            ExportColumn::make('user')
+                ->label('User'),
+            ExportColumn::make('locate.location')
+                ->label('Location and Condition '),
+            ExportColumn::make('locate.building')
+                ->label('Building'),
+            ExportColumn::make('remark')
+                ->label('Remark'),
             ExportColumn::make('status'),
+            ExportColumn::make('code')
+                ->label('Code'),
         ];
     }
 

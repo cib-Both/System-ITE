@@ -119,6 +119,7 @@ class LoanResource extends Resource
                         ->schema([
                                 DatePicker::make('loan_date')
                                     ->label('Loan Date')
+                                    ->required()
                                     ->native(false)
                                     ->closeOnDateSelection()
                                     ->displayFormat('M, d, Y')

@@ -16,7 +16,7 @@ class Purchaselist extends BaseWidget
     {
         return $table
             ->query(
-                Purchase::query()->where('status', '!=', 'delivered'))
+                Purchase::query()->where('status', '=', 'pending || cancelled'))
             ->columns([
                 Tables\Columns\TextColumn::make('invoice_number')
                     ->searchable()
@@ -39,12 +39,12 @@ class Purchaselist extends BaseWidget
                         'pending' => 'warning',
                         'cancelled' => 'danger',
                     }),
-            ])
-            ->actions([
-                Tables\Actions\Action::make('view_invoice')
-                ->icon('heroicon-o-document-text')
-                ->color('warning')
-                ->url(fn ($record) => PurchaseResource::getUrl('invoice', ['record' => $record->id]))
-            ]);
+                ]);
+            // ->actions([
+            //     Tables\Actions\Action::make('view_invoice')
+            //     ->icon('heroicon-o-document-text')
+            //     ->color('warning')
+            //     ->url(fn ($record) => PurchaseResource::getUrl('invoice', ['record' => $record->id]))
+            // ]);
     }
 }

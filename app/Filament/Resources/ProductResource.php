@@ -42,15 +42,6 @@ class ProductResource extends Resource
                                     ->label('Supplier Name')
                                     ->placeholder('Full Name')
                                     ->required(),
-                                TextInput::make('email')
-                                    ->label('Email')
-                                    ->placeholder('example@gmail.com')
-                                    ->email()
-                                    ->required(),
-                                TextInput::make('phone')
-                                    ->label('Phone Number')
-                                    ->placeholder('Phone Number')
-                                    ->required(),
                             ])    
                             ->searchable()
                             ->native(false)

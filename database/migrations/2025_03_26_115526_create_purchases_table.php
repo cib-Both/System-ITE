@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
             $table->date('purchase_date');
-            $table->string('invoice_number')->unique();
+            $table->string('voucher_ref')->unique()->nullable();
             $table->enum('status', ['pending', 'delivered', 'cancelled'])->default('pending');
             $table->timestamps();
         });
