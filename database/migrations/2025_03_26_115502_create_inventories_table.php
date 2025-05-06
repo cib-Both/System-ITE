@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->foreignId('purchase_id')->constrained()->onDelete('cascade');
+            // $table->foreignId('purchase_id')->constrained()->onDelete('cascade');
             $table->string('class_of_asset')->nullable();
             $table->string('asset_identity_no')->nullable();
             $table->string('serial_number', 50)->unique();
