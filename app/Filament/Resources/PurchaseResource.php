@@ -75,17 +75,19 @@ class PurchaseResource extends Resource
                                     ->required(),
                                 TextInput::make('quantity')
                                     ->label('Quantity')
+                                    ->required()
                                     ->numeric()
                                     ->default(1)
                                     ->reactive(),
                                 TextInput::make('serial_number')
                                     ->label('Serial Number')
                                     ->placeholder('SN')
-                                    ->unique(ignoreRecord: true)
-                                    ->required(),
+                                    ->required()
+                                    ->unique(ignoreRecord: true),
                                 TextInput::make('price')
                                     ->numeric()
                                     ->reactive()
+                                    ->required()
                                     ->prefix('$'),
                             ])
                             ->cloneable()
@@ -126,8 +128,7 @@ class PurchaseResource extends Resource
                                     'cancelled' => 'Cancelled',
                                 ])
                                 ->default('pending')
-                                ->reactive()
-                                // ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered')                             
+                                ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered')                             
                         ])
                     ]) 
             ]);
