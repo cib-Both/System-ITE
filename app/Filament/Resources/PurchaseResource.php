@@ -56,7 +56,7 @@ class PurchaseResource extends Resource
                             ->closeOnDateSelection()
                             ->displayFormat('M/ d/ Y')
                             ->placeholder('MM/DD/YYYY'),
-                    ]) ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered'),
+                    ])->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered'),
 
                 Section::make('Product Detail')
                     ->schema([
@@ -82,8 +82,8 @@ class PurchaseResource extends Resource
                                 TextInput::make('serial_number')
                                     ->label('Serial Number')
                                     ->placeholder('SN')
-                                    ->required()
-                                    ->unique(ignoreRecord: true),
+                                    ->unique(ignoreRecord: true)
+                                    ->required(),
                                 TextInput::make('price')
                                     ->numeric()
                                     ->reactive()
@@ -98,7 +98,8 @@ class PurchaseResource extends Resource
                                 $set('total_qty', $totalQty);
                                 $set('total_cost', $totalCost);
                             }),
-                    ]) ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered'),
+                    ])
+                    ->disabled(fn (?Purchase $record) => $record && $record->status === 'delivered'),
 
                     Section::make()
                     ->columns(2)

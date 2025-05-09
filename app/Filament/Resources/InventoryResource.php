@@ -6,6 +6,7 @@ use App\Filament\Exports\InventoryExporter;
 use App\Filament\Resources\InventoryResource\Pages;
 use App\Models\Inventory;
 use Dom\Text;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -19,6 +20,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Support\Enums\IconPosition;
+use Filament\Tables\Enums\FiltersLayout;
 
 class InventoryResource extends Resource
 {
@@ -197,8 +199,51 @@ class InventoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
+            Tables\Filters\SelectFilter::make('status')
+                ->label('Status')
+                ->options([
+                    'available' => 'Available',
+                    'loaned' => 'Loaned',
+                    'damaged' => 'Damaged',
+                    'lost' => 'Lost',
+                ]),
+            Tables\Filters\SelectFilter::make('remark')
+                ->label('Remarks')
+                ->options([
+                    'install' => 'Install',
+                    'not yet install' => 'Not Yet Install',
+                ]),
+            Tables\Filters\SelectFilter::make('locate_id')
+                ->label('Location')
+                ->relationship('locate', 'location')
+                ->searchable(),
+            Tables\Filters\SelectFilter::make('building')
+                ->label('Building')
+                ->relationship('locate', 'building')
+                ->searchable(),
+            Tables\Filters\TrashedFilter::make()
+                ->label('Deleted'),
+            Tables\Filters\Filter::make('purchase_date')
+                ->form([
+                    DatePicker::make('from')
+                        ->label('From')
+                        ->native(false)
+                        ->closeOnDateSelection()
+                        ->displayFormat('M/ d/ Y')
+                        ->placeholder('MM/DD/YYYY'),
+                    DatePicker::make('to')
+                        ->label('To')
+                        ->placeholder('To')
+                        ->native(false)
+                        ->closeOnDateSelection()
+                        ->displayFormat('M/ d/ Y')
+                        ->placeholder('MM/DD/YYYY'),
+                ])
+                ->query(fn (Builder $query, array $data): Builder => $query
+                ->when($data['from'], fn (Builder $query, $date) => $query->whereHas('purchase', fn (Builder $subQuery) => $subQuery->whereDate('purchase_date', '>=', $date)))
+                ->when($data['to'], fn (Builder $query, $date) => $query->whereHas('purchase', fn (Builder $subQuery) => $subQuery->whereDate('purchase_date', '<=', $date)))
+                )
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),

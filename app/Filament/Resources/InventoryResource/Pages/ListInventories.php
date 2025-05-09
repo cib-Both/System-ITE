@@ -31,51 +31,57 @@ class ListInventories extends ListRecords
         ];
     }
 
-
-    public function getTabs(): array
+    protected function getHeaderWidgets(): array
     {
-        return[
-            'All' => Tab::make()
-                ->icon('heroicon-m-inbox-stack')
-                ->iconPosition(IconPosition::Before)
-                ->badge(fn () => Inventory::count()),         
-
-            'Available' => Tab::make()
-                ->icon('heroicon-m-check-circle')
-                ->iconPosition(IconPosition::Before)
-                ->badge(fn () => Inventory::where('status', '=', 'available')->count())
-                ->badgeColor('success')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'available')),
-    
-            'Loan' => Tab::make()
-                ->icon('heroicon-m-arrow-up-on-square-stack')
-                ->iconPosition(IconPosition::Before)
-                ->badge(fn () => Inventory::where('status', '=', 'loaned')->count())
-                ->badgeColor('warning')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'loaned')),
-
-            'Damage' => Tab::make()
-                ->icon('heroicon-m-exclamation-circle')
-                ->iconPosition(IconPosition::Before)
-                ->badge(fn () => Inventory::where('status', '=', 'damaged')->count())
-                ->badgeColor('warning')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'damaged')),
-
-            'Lost' => Tab::make()
-                ->icon('heroicon-m-no-symbol')
-                ->iconPosition(IconPosition::Before)
-                ->badge(fn () => Inventory::where('status', '=', 'lost')->count())
-                ->badgeColor('danger')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'lost')),
-
-            'Trash' => Tab::make()
-                ->icon('heroicon-m-trash')
-                ->iconPosition(IconPosition::Before)
-                ->badge(fn () => Inventory::onlyTrashed()->count()) 
-                ->badgeColor('danger')
-                ->modifyQueryUsing(fn (Builder $query) => $query->onlyTrashed()),
-
+        return [
+            InventoryResource\Widgets\InventoryOverview::class,
         ];
     }
+
+    // public function getTabs(): array
+    // {
+    //     return[
+    //         'All' => Tab::make()
+    //             ->icon('heroicon-m-inbox-stack')
+    //             ->iconPosition(IconPosition::Before)
+    //             ->badge(fn () => Inventory::count()),         
+
+    //         'Available' => Tab::make()
+    //             ->icon('heroicon-m-check-circle')
+    //             ->iconPosition(IconPosition::Before)
+    //             ->badge(fn () => Inventory::where('status', '=', 'available')->count())
+    //             ->badgeColor('success')
+    //             ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'available')),
+    
+    //         'Loan' => Tab::make()
+    //             ->icon('heroicon-m-arrow-up-on-square-stack')
+    //             ->iconPosition(IconPosition::Before)
+    //             ->badge(fn () => Inventory::where('status', '=', 'loaned')->count())
+    //             ->badgeColor('warning')
+    //             ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'loaned')),
+
+    //         'Damage' => Tab::make()
+    //             ->icon('heroicon-m-exclamation-circle')
+    //             ->iconPosition(IconPosition::Before)
+    //             ->badge(fn () => Inventory::where('status', '=', 'damaged')->count())
+    //             ->badgeColor('warning')
+    //             ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'damaged')),
+
+    //         'Lost' => Tab::make()
+    //             ->icon('heroicon-m-no-symbol')
+    //             ->iconPosition(IconPosition::Before)
+    //             ->badge(fn () => Inventory::where('status', '=', 'lost')->count())
+    //             ->badgeColor('danger')
+    //             ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '=', 'lost')),
+
+    //         'Trash' => Tab::make()
+    //             ->icon('heroicon-m-trash')
+    //             ->iconPosition(IconPosition::Before)
+    //             ->badge(fn () => Inventory::onlyTrashed()->count()) 
+    //             ->badgeColor('danger')
+    //             ->modifyQueryUsing(fn (Builder $query) => $query->onlyTrashed()),
+
+    //     ];
+    // }
 
 }
