@@ -16,14 +16,13 @@ return new class extends Migration
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            // $table->foreignId('purchase_id')->constrained()->onDelete('cascade');
             $table->string('class_of_asset')->nullable();
             $table->string('asset_identity_no')->nullable();
             $table->string('serial_number', 50)->unique();
             $table->integer('quantity')->default(1);
             $table->decimal('unit_price', 15, 2);
             $table->string('user', 50)->nullable();
-            $table->string('code', 20)->unique();
+            $table->string('code', 20)->nullable()->unique();
             $table->enum('status', ['available', 'loaned', 'damaged', 'lost'])->default('available');
             $table->enum('remark', ['install', 'not yet install'])->default('not yet install');
             $table->timestamps();

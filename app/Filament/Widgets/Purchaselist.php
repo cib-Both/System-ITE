@@ -10,13 +10,13 @@ use App\Models\Purchase;
 
 class Purchaselist extends BaseWidget
 {
-    protected static ?string $heading = 'Purchase List';
+    protected static ?string $heading = 'Purchase Pending List';
     protected static ?int $sort = 1;
     public function table(Table $table): Table
     {
         return $table
             ->query(
-                Purchase::query()->where('status', '=', 'pending || cancelled'))
+                Purchase::query()->where('status', '=', 'pending'))
             ->columns([
                 Tables\Columns\TextColumn::make('invoice_number')
                     ->searchable()
@@ -33,11 +33,9 @@ class Purchaselist extends BaseWidget
                     ->label('Status')
                     ->icon(fn (string $state): ?string => match ($state) {
                         'pending' => 'heroicon-m-clock',
-                        'cancelled' => 'heroicon-m-x-circle',
                     })
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'warning',
-                        'cancelled' => 'danger',
                     }),
                 ]);
             // ->actions([

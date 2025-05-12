@@ -31,8 +31,4 @@ class Product extends Model
         return $this->hasMany(Purchase::class);
     }
 
-    public function product()
-    {
-        return $this->belongsTo(\App\Models\Product::class);
-    }
 }
