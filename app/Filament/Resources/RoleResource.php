@@ -136,6 +136,16 @@ class RoleResource extends Resource
                             ->columns(2)
                             ->gridDirection('row'),
                     ]),
+                Section::make('locate')
+                    ->schema([
+                        CheckboxList::make('permissions')
+                            ->relationship('permissions', 'id')
+                            ->options(Permission::where('name', 'like', '%Locate%')->pluck('name', 'id')->toArray())
+                            ->label('Permissions')
+                            ->bulkToggleable()
+                            ->columns(2)
+                            ->gridDirection('row'),
+                    ]),
             ]);
     }
 

@@ -18,9 +18,9 @@ class Purchaselist extends BaseWidget
             ->query(
                 Purchase::query()->where('status', '=', 'pending'))
             ->columns([
-                Tables\Columns\TextColumn::make('invoice_number')
+                Tables\Columns\TextColumn::make('voucher_ref')
                     ->searchable()
-                    ->label('Invoice'),
+                    ->label('Voucher Ref.'),
                 Tables\Columns\TextColumn::make('total_qty')
                     ->sortable()
                     ->label('Total Quantity'),
@@ -28,6 +28,10 @@ class Purchaselist extends BaseWidget
                     ->sortable()
                     ->label('Total Cost')
                     ->money('USD'),
+                Tables\Columns\TextColumn::make('purchase_date')
+                    ->dateTime('d-M-Y')
+                    ->sortable()
+                    ->label('Purchase Date'),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->label('Status')
