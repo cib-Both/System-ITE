@@ -27,6 +27,22 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationGroup = 'Users Settings';
     protected static ?int $navigationSort = 1;
+    protected static ?string $recordTitleAttribute = 'name';
+    public static function getGloballySearchableAttributes(): array
+    {
+    return [
+        'name',
+        'email',
+        'roles.name',
+    ];
+    }
+    public static function getGlobalSearchResultDetails($record): array
+    {
+    return [
+        'Email' => $record->email,
+        'Role' => $record->roles->pluck('name')->implode(', '),
+    ];  
+}
 
     public static function form(Form $form): Form
     {

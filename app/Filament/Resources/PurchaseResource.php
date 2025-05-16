@@ -27,6 +27,16 @@ class PurchaseResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
     protected static ?string $navigationGroup = 'Transaction';
     protected static ?int $navigationSort = 2;
+    protected static ?string $recordTitleAttribute = 'voucher_ref';
+    public static function getGlobalSearchResultDetails($record): array
+    {
+    return [
+        'Supplier' => $record->supplier->name,
+        'Total Quantity' => $record->total_qty,
+        'Total Cost' => $record->total_cost,
+        'Purchase Date' => $record->purchase_date,
+    ];
+    }
 
     public static function form(Form $form): Form
     {
@@ -88,6 +98,7 @@ class PurchaseResource extends Resource
                                     ->numeric()
                                     ->reactive()
                                     ->required()
+                                    ->debounce(750)
                                     ->prefix('$'),
                             ])
                             ->cloneable()

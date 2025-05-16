@@ -20,6 +20,20 @@ class LocateResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?string $navigationGroup = 'Inventory Management';
     protected static ?int $navigationSort = 5;
+    public static function getGloballySearchableAttributes(): array
+    {
+    return [
+        'location',
+        'building',
+    ];
+    }
+        public static function getGlobalSearchResultDetails($record): array
+    {
+    return [
+        'Location' => $record->location,
+        'Building' => $record->building,
+    ];
+    }
 
     public static function form(Form $form): Form
     {

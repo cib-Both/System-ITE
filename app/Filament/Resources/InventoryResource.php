@@ -30,6 +30,26 @@ class InventoryResource extends Resource
     protected static ?string $navigationGroup = 'Inventory Management';
     protected static ?int $navigationSort = 1;
 
+    public static function getGloballySearchableAttributes(): array
+    {
+    return [
+        'class_of_asset',
+        'asset_identity_no',
+        'product.model',
+        'serial_number',
+    ];
+    }
+    public static function getGlobalSearchResultDetails($record): array
+{
+    return [
+        'class_of_asset' => $record->class_of_asset,
+        'asset_identity_no' => $record->asset_identity_no,
+        'product.brand' => $record->product->brand,
+        'product.model' => $record->product->model,
+        'serial_number' => $record->serial_number,
+    ];
+}
+
     public static function form(Form $form): Form
     {
         return $form

@@ -33,6 +33,14 @@ class LoanResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-on-square-stack';
     protected static ?string $navigationGroup = 'Transaction';
     protected static ?int $navigationSort = 1;
+    protected static ?string $recordTitleAttribute = 'name';
+    public static function getGlobalSearchResultDetails($record): array
+{
+    return [
+        'Position' => $record->position,
+        'Department' => $record->department->name,
+    ];
+}
 
     public static function form(Form $form): Form
     {
