@@ -21,6 +21,8 @@ use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\Summarizers\Count;
 
 class InventoryResource extends Resource
 {
@@ -163,11 +165,15 @@ class InventoryResource extends Resource
                     ->label('Voucher Ref.'),
                 Tables\Columns\TextColumn::make('quantity')
                     ->sortable()
-                    ->label('Quantity'),
+                    ->label('Quantity')
+                    ->summarize(Count::make()),
                 Tables\Columns\TextColumn::make('unit_price')
                     ->sortable()
                     ->label('Unit Price')
-                    ->money('usd'),
+                    ->money('usd')
+                    ->summarize(
+                        Sum::make()
+                            ->money('usd')),
                 Tables\Columns\TextColumn::make('user')
                     ->searchable()
                     ->label('User'),
@@ -246,18 +252,17 @@ class InventoryResource extends Resource
             Tables\Filters\Filter::make('purchase_date')
                 ->form([
                     DatePicker::make('from')
-                        ->label('From')
+                        ->label('Purchase from')
                         ->native(false)
                         ->closeOnDateSelection()
-                        ->displayFormat('M/ d/ Y')
-                        ->placeholder('MM/DD/YYYY'),
+                        ->displayFormat('d/ M/ Y')
+                        ->placeholder('DD/MM/YYYY'),
                     DatePicker::make('to')
                         ->label('To')
-                        ->placeholder('To')
                         ->native(false)
                         ->closeOnDateSelection()
-                        ->displayFormat('M/ d/ Y')
-                        ->placeholder('MM/DD/YYYY'),
+                        ->displayFormat('d/ M/ Y')
+                        ->placeholder('DD/MM/YYYY'),
                 ])
                 ->query(fn (Builder $query, array $data): Builder => $query
                 ->when($data['from'], fn (Builder $query, $date) => $query->whereHas('purchase', fn (Builder $subQuery) => $subQuery->whereDate('purchase_date', '>=', $date)))

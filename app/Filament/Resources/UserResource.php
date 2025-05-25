@@ -114,6 +114,7 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
+                    ->icon('heroicon-m-user')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Role')
