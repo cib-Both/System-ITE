@@ -28,7 +28,6 @@ class LoanExporter extends Exporter
                 ->label('Serial Number'),
             ExportColumn::make('inventory.quantity')
                 ->label('Quantity'),
-            ExportColumn::make('phone_number'),
             ExportColumn::make('loan_date'),
             ExportColumn::make('return_date'),
         ];

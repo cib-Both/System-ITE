@@ -24,7 +24,7 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box-arrow-down';
     protected static ?string $navigationGroup = 'Inventory Management';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
     protected static ?string $recordTitleAttribute = 'model';
     public static function getGloballySearchableAttributes(): array
     {

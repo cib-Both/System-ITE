@@ -19,7 +19,7 @@ class LocateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?string $navigationGroup = 'Inventory Management';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
     public static function getGloballySearchableAttributes(): array
     {
     return [

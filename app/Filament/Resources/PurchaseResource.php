@@ -26,7 +26,7 @@ class PurchaseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
     protected static ?string $navigationGroup = 'Transaction';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
     protected static ?string $recordTitleAttribute = 'voucher_ref';
     public static function getGlobalSearchResultDetails($record): array
     {

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('inventory_id')->constrained()->onDelete('cascade');
             $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->string('position', 100);
-            $table->string('phone_number', 20);
             $table->date('loan_date');
             $table->date('return_date')->nullable();
             $table->enum('status', ['active', 'returned'])->default('active');

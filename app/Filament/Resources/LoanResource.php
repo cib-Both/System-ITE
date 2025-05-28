@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Tabs\Tab;
@@ -31,8 +32,8 @@ class LoanResource extends Resource
     protected static ?string $model = Loan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-on-square-stack';
-    protected static ?string $navigationGroup = 'Transaction';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Inventory Management';
+    protected static ?int $navigationSort = 2;
     protected static ?string $recordTitleAttribute = 'name';
     public static function getGlobalSearchResultDetails($record): array
 {
@@ -47,7 +48,7 @@ class LoanResource extends Resource
         return $form
             ->schema([
                 Section::make('Loaner Information')
-                    ->columns(4)
+                    ->columns(3)
                     ->schema([
                         TextInput::make('name')
                             ->label('Full Name')
@@ -57,9 +58,6 @@ class LoanResource extends Resource
                             ->label('Position')
                             ->placeholder('Position')
                             ->required(),
-                        TextInput::make('phone_number')
-                            ->label('Phone')
-                            ->placeholder('Phone Number'),
                         Select::make('department_id')
                             ->label('Department')
                             ->placeholder('Select Department')
@@ -77,12 +75,20 @@ class LoanResource extends Resource
                     ]),
                                   
                 Section::make('Loan')
-                    ->columns(3)
+                    ->columns(4)
                     ->schema([
                         Select::make('inventory_id')
-                            ->label('Serial Number')
-                            ->placeholder('Select Serial Number')
-                            ->relationship('inventory', 'serial_number')
+                            ->label('Code')
+                            ->placeholder('Select Code')
+                            ->options(function () {
+                                return Inventory::whereNotNull('code')
+                                    ->where('status', '!=', 'loaned')
+                                    ->pluck('code', 'id');
+                            })
+                            ->getOptionLabelUsing(function ($value): ?string {
+                                $inventory = Inventory::find($value);
+                                return $inventory?->code;
+                            })
                             ->searchable()
                             ->preload()
                             ->native(false)
@@ -92,10 +98,12 @@ class LoanResource extends Resource
                                 if ($state) {
                                     $inventory = Inventory::find($state);
                                     if ($inventory) {
+                                        $set('serial_number' , $inventory->serial_number);
                                         $set('product_brand', $inventory->product->brand);
                                         $set('product_model', $inventory->product->model);
                                     }
                                 } else {
+                                    $set('serial_number', null);
                                     $set('product_brand', null);
                                     $set('product_model', null);
                                 }
@@ -104,11 +112,17 @@ class LoanResource extends Resource
                                 if ($state) {
                                     $inventory = Inventory::find($state);
                                     if ($inventory) {
+                                        $set('serial_number', $inventory->serial_number);
                                         $set('product_brand', $inventory->product->brand);
                                         $set('product_model', $inventory->product->model);
                                     }
                                 }
                             }),
+                            TextInput::make('serial_number')
+                            ->label('Serial number')
+                            ->Placeholder('Serial number')
+                            ->disabled()
+                            ->required(),
                             TextInput::make('product_brand')
                             ->label('Brand')
                             ->placeholder('Product Brand')
