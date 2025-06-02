@@ -99,7 +99,7 @@
                             <path d="M17.293 13.293A8 8 0 016.707 2.707 8 8 0 1017.293 13.293z" />
                         </svg>
                     </button>
-                    <a href="{{ url('/admin') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">Sign in</a>
+                    <a href="{{ url('/admin') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">Admin Sign in</a>
                 </div>
 
                 <!-- Mobile menu button -->
@@ -263,7 +263,7 @@
                                 </svg>
                             </div>
                             <p class="ml-3 text-gray-600 dark:text-gray-400">
-                                <span class="font-medium text-gray-900 dark:text-white">Trusted by businesses worldwide</span> - companies rely on our solution
+                                <span class="font-medium text-gray-900 dark:text-white">Trusted Inventory</span> - make it easy to management
                             </p>
                         </div>
                         <div class="flex items-start">
@@ -307,7 +307,7 @@
                         <span class="ml-2 text-xl font-bold">Inventory-System</span>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-l mb-1">Developer:</h3>
+                        <h3 class="font-semibold text-l mb-1">Development Team:</h3>
                         <ul class="space-y-1 mb-2">
                             <li><a class="ml-5 hover:text-gray-950 dark:hover:text-white transition-colors">Chem Indraboth</a></li>
                             <li><a class="ml-5 hover:text-gray-950 dark:hover:text-white transition-colors">Teng Sear</a></li>
@@ -324,7 +324,7 @@
                         <li><a href="#home" class="hover:text-gray-950 dark:hover:text-white transition-colors">Home</a></li>
                         <li><a href="#features" class="hover:text-gray-950 dark:hover:text-white transition-colors">Features</a></li>
                         <li><a href="#about" class="hover:text-gray-950 dark:hover:text-white transition-colors">About</a></li>
-                        <li><a href="{{ url('/admin') }}" class="hover:text-gray-950 dark:hover:text-white transition-colors">Dashboard Sign in</a></li>
+                        <li><a href="{{ url('/admin') }}" class="hover:text-gray-950 dark:hover:text-white transition-colors">Admin Sign in</a></li>
                     </ul>
                 </div>
                 <div>
