@@ -15,15 +15,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(PermissionSeeder::class);
 
-        $user = User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-        ]);
-        $role = Role :: create(['name' => 'admin']);
-        $user->assignRole($role);
+        // Create or get the admin role
+        $role = Role::firstOrCreate(['name' => 'admin']);
 
-        
+        // Create or get the admin user
+        $user = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Admin',
+                'password' => bcrypt('admin12'), // Set a default password
+            ]
+        );
+
+        // Assign the admin role to the user if not already assigned
+        if (!$user->hasRole('admin')) {
+            $user->assignRole('admin');
+        }
     }
+
 }
