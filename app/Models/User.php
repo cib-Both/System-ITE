@@ -55,12 +55,6 @@ public function canAccessPanel(Panel $panel): bool
     if ($this->hasRole('admin')) {
         return true;
     }
-
-    // Only allow users with a role (not just a permission)
-    if ($this->roles()->exists() && $this->permissions()->exists()) {
-        return true;
-    }
-
-    return false;
+    return $this->getAllPermissions()->isNotEmpty();
 }
 }
