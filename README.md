@@ -63,7 +63,6 @@ php artisan key:generate
 ```bash
 php artisan migrate
 php artisan db:seed
-php artisan db:seed --class=PermissionSeeder
 ```
 6. Start the Development Server
 ```bash
@@ -73,5 +72,5 @@ composer run dev
 
 Email: admin@gmail.com
 
-Password: 12345
+Password: admin12
 

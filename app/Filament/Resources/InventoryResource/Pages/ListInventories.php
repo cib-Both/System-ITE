@@ -24,10 +24,10 @@ class ListInventories extends ListRecords
                 ->iconPosition(IconPosition::After)
                 ->label('Export')
                 ->color('success'),
-            Actions\CreateAction::make()
-                ->icon('heroicon-m-plus')
-                ->iconPosition(IconPosition::After)
-                ->label('Add Inventory'),
+            // Actions\CreateAction::make()
+            //     ->icon('heroicon-m-plus')
+            //     ->iconPosition(IconPosition::After)
+            //     ->label('Add Inventory'),
         ];
     }
 

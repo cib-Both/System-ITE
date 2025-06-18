@@ -18,7 +18,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Split;
-use Filament\Forms\Components\Tabs\Tab;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Columns\Summarizers\Sum;
@@ -293,6 +294,84 @@ class InventoryResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+{
+    return $infolist
+        ->schema([
+            Components\Section::make('Inventory Details')
+                ->schema([
+                    Components\Split::make([
+                        Components\Grid::make(2)
+                            ->schema([
+                                Components\Group::make([
+                                    Components\TextEntry::make('class_of_asset')
+                                        ->label('Class of Asset'),
+                                    Components\TextEntry::make('asset_identity_no')
+                                        ->label('Asset Identity No'),
+                                    Components\TextEntry::make('serial_number')
+                                        ->label('Serial Number'),
+                                    Components\TextEntry::make('code')
+                                        ->label('Code'),
+                                    Components\TextEntry::make('quantity')
+                                        ->label('Quantity'),
+                                    Components\TextEntry::make('status')
+                                        ->label('Status')
+                                        ->badge()
+                                        ->color(fn (string $state): string => match ($state) {
+                                            'available' => 'success',
+                                            'loaned' => 'warning',
+                                            'damaged' => 'danger',
+                                            'lost' => 'danger',
+                                            default => 'gray',
+                                        }),
+                                    Components\TextEntry::make('remark')
+                                        ->label('Remarks')
+                                        ->badge()
+                                        ->color(fn (string $state): string => match ($state) {
+                                            'install' => 'success',
+                                            'not yet install' => 'warning',
+                                            default => 'gray',
+                                        }),
+                                ]),
+                                Components\Group::make([
+                                    Components\TextEntry::make('product.brand')
+                                        ->label('Brand'),
+                                    Components\TextEntry::make('product.model')
+                                        ->label('Model'),
+                                    Components\TextEntry::make('user')
+                                        ->label('User'),
+                                    Components\TextEntry::make('locate.location')
+                                        ->label('Location'),
+                                    Components\TextEntry::make('locate.building')
+                                        ->label('Building'),
+                                    Components\TextEntry::make('purchase.voucher_ref')
+                                        ->label('Voucher Ref'),
+                                    Components\TextEntry::make('purchase.purchase_date')
+                                        ->label('Purchase Date')
+                                        ->date('d-M-Y'),
+                                    Components\TextEntry::make('unit_price')
+                                        ->label('Unit Price')
+                                        ->money('usd'),
+                                ]),
+                            ]),
+                    ])->from('lg'),
+                ]),
+            Components\Section::make('Timestamps')
+                ->collapsible()
+                ->schema([
+                    Components\TextEntry::make('created_at')
+                        ->label('Created At')
+                        ->dateTime('d-M-Y'),
+                    Components\TextEntry::make('updated_at')
+                        ->label('Last Updated')
+                        ->dateTime('d-M-Y '),
+                    Components\TextEntry::make('deleted_at')
+                        ->label('Deleted At')
+                        ->dateTime('d-M-Y ')
+                        ->hidden(fn ($record) => $record->deleted_at === null),
+                ]),
+        ]);
+}
     public static function getRelations(): array
     {
         return [
@@ -304,7 +383,7 @@ class InventoryResource extends Resource
     {
         return [
             'index' => Pages\ListInventories::route('/'),
-            'create' => Pages\CreateInventory::route('/create'),
+            // 'create' => Pages\CreateInventory::route('/create'),
             'edit' => Pages\EditInventory::route('/{record}/edit'),
         ];
     }
